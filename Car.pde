@@ -12,6 +12,7 @@ class Car {
     
     void toggleAutonomous() {
         autonomous = !autonomous;
+        println("Toggled autonomous, now: " + autonomous);
     }
     
     void setAutonomous(boolean auto) {

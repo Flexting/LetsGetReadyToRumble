@@ -1,100 +1,103 @@
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 
-class Movement
-{
-   int interval = 0, intervalMod = 5, safeDriveAngle = 10;
-   boolean forward, left, right;
-   
-   Movement()
-   {
-      forward = false;
-   }
-   
-   void drive(float direction) {
-      
-      if (interval < intervalMod) {
-         if (direction > -50 && direction < 50) {
-            setForward(true);
-            
-            if (direction > safeDriveAngle) 
-               setTurnLeft(true);
-            else
-               setTurnLeft(false);
-               
-            if (direction < -safeDriveAngle) 
-               setTurnRight(true);
-            else
-               setTurnRight(false);
-            
-         } else {
-            setForward(false);
-         }
-      
-      }
-      interval %= intervalMod*2;
-   }
-   
-   void setForward(boolean value) {
-      if (value != forward) {
-         forward(value);
-         forward = value;
-      }
-   }
-   
-   void setTurnLeft(boolean value) {
-      if (value != left) {
-         turnLeft(value);
-         left = value;
-      }
-   }
-   
-   void setTurnRight(boolean value) {
-      if (value != right) {
-         turnRight(value);
-         right = value;
-      }
-   }
-   
-   void forward(boolean value)
-   {
-      try {
-         Robot robot = new Robot();
-         // Simulate a key press
-         if (value)
-            robot.keyPress(KeyEvent.VK_W);
-         else
-            robot.keyRelease(KeyEvent.VK_W);
-      } catch (Exception e) {
-         e.printStackTrace();
-      } 
-   }
-   
-   void turnLeft(boolean value)
-   {
-      try {
-         Robot robot = new Robot();
-         // Simulate a key press
-         if (value)
-            robot.keyPress(KeyEvent.VK_A);
-         else
-            robot.keyRelease(KeyEvent.VK_A);
-      } catch (Exception e) {
-         e.printStackTrace();
-      } 
-   }
-   
-   void turnRight(boolean value)
-   {
-      try {
-         Robot robot = new Robot();
-         // Simulate a key press
-         if (value)
-            robot.keyPress(KeyEvent.VK_D);
-         else
-            robot.keyRelease(KeyEvent.VK_D);
-      } catch (Exception e) {
-         e.printStackTrace();
-      } 
-   }
+enum Acceleration {
+    NONE(-1),
+    FORWARD(KeyEvent.VK_W),
+    BACKWARD(KeyEvent.VK_S);
+    
+    private int val;
+    private Acceleration(int val) {
+        this.val = val;
+    }
+    
+    int val() {
+        return val;
+    }
+}
+
+enum Direction {
+    NONE(-1),
+    LEFT(KeyEvent.VK_A),
+    RIGHT(KeyEvent.VK_D);
+    
+    private int val;
+    private Direction(int val) {
+        this.val = val;
+    }
+    
+    int val() {
+        return val;
+    }
+}
+
+class Movement {  
+    int interval = 0, intervalMod = 5, safeDriveAngle = 10;
+    Acceleration acceleration;
+    Direction direction;
+
+    Movement() {
+        acceleration = Acceleration.NONE;
+        direction = Direction.NONE;
+    }
+
+    void drive(float direction) {
+
+        if (interval < intervalMod) {
+            if (direction > -50 && direction < 50) {
+                setAcceleration(Acceleration.FORWARD);
+
+                if (direction > safeDriveAngle) 
+                    setDirection(Direction.LEFT);
+                else if (direction < -safeDriveAngle) 
+                    setDirection(Direction.RIGHT);
+                else
+                    setDirection(Direction.NONE);
+                    
+            } else {
+                setAcceleration(Acceleration.NONE);
+            }
+        }
+        interval %= intervalMod*2;
+    }
+
+    void setDirection(Direction dir) {
+        if (direction == dir)
+            return;
+        
+        release(direction.val());
+        press(dir.val());
+        direction = dir;
+    }
+    
+    void setAcceleration(Acceleration acc) {
+        if (acceleration == acc)
+            return;
+        
+        release(acceleration.val());
+        press(acc.val());
+        acceleration = acc;
+    }
+    
+    void press(int key) {
+        if (key < 0) return;
+        try {
+            Robot robot = new Robot();
+            robot.keyPress(key);
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    void release(int key) {
+        if (key < 0) return;
+        try {
+            Robot robot = new Robot();
+            robot.keyRelease(key);
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
