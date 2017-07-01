@@ -31,10 +31,11 @@ void draw() {
     image(capture, 0, 0);
     
     capture.loadPixels();
-    ballDetection.exampleCode();
+    //ballDetection.exampleCode();
     carDetection.detectAlgorithm();
     
     debug.display();
+    car.drive();
 }
 
 void keyPressed() {
