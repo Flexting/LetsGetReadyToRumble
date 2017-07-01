@@ -7,20 +7,24 @@ class CarDetection {
     
     void detectAlgorithm() {
         // windowDetection();
-        // hatDetection();   
-        arrowDetection();
+         hatDetection();   
+        // arrowDetection();
     }
    
     void hatDetection() {
+        ArrayList<PVector> redHatPoints = new ArrayList<PVector>();
+        PVector mid = new PVector(0, 0);
+        
         noStroke();
         for (int i = 0; i < capture.pixels.length; i += 5) {
             color pixel = capture.pixels[i];
             float R = red(pixel), G = green(pixel), B = blue(pixel);
            
             // Red part of the Propeller hat
-            if (R > 100 && G < 20 && B < 20) {
-                fill(R, 0, 0);
+            if (hue(pixel) == 0 && R > 100 && R < 240 && G < 20 && B < 20) {
+                fill(255-R, 0, 0);
                 ellipse(i % config.captureWidth, i / config.captureWidth, 5, 5);
+                redHatPoints.add( new PVector(i % config.captureWidth, i / config.captureWidth) );
             } 
             
             // Orange part of the Propeller hat
@@ -35,6 +39,17 @@ class CarDetection {
                 ellipse(i % config.captureWidth, i / config.captureWidth, 5, 5);
             } 
         }
+        
+        for (int i = 0; i < redHatPoints.size(); i++) 
+            mid.add(redHatPoints.get(i));
+            
+        mid.div(redHatPoints.size());
+        noFill();
+        stroke(255);
+        ellipse(mid.x, mid.y, 60, 60);
+        line(config.captureWidth / 2, 0, config.captureWidth / 2, config.captureHeight);
+        
+        car.carAlignment = config.captureWidth/2 - mid.x;
     }
     
     void windowDetection() {
