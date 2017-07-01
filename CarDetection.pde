@@ -6,9 +6,9 @@ class CarDetection {
     }
     
     void detectAlgorithm() {
-        // windowDetection();
-         hatDetection();   
-        // arrowDetection();
+         //windowDetection();
+         //hatDetection();   
+         arrowDetection();
     }
    
     void hatDetection() {
@@ -146,8 +146,16 @@ class CarDetection {
     }
     
     void arrowDetection() {
+        ArrayList<PVector> arrowPoints = new ArrayList<PVector>();
+        
         noStroke();
         for (int i = 0; i < capture.pixels.length; i += 5) {
+            int x = i % config.captureWidth;
+            int y = i / config.captureWidth;
+            
+            if (y < config.captureHeight / 4 * 3) continue; // Ignore top area
+            if (Math.abs(x - config.captureWidth/2) < config.captureWidth/8) continue; // Ignore middle
+            
             color pixel = capture.pixels[i];
             float R = red(pixel), G = green(pixel), B = blue(pixel);
             float Min, Max;
@@ -155,10 +163,20 @@ class CarDetection {
             Min = min(R, G, B);
             Max = max(R, G, B);
             
-            if (Max - Min < 3) {
+            if (Min < 200) continue; // Ignore dark
+            
+            if (Max - Min < 5) {
                 fill(R, G, 0);
-                ellipse(i % config.captureWidth, i / config.captureWidth, 5, 5);
+                ellipse(x, y, 5, 5);
+                text("Arrow", x, y);
+                arrowPoints.add(new PVector(x, y));
             }
         }
+        
+        PVector mid = new PVector(0, 0);
+        for (PVector vec : arrowPoints)
+            mid.add(vec);
+        mid.div(arrowPoints.size());
+        car.carAlignment = config.captureWidth/2 - mid.x;
     }
 }

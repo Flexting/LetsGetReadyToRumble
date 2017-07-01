@@ -44,9 +44,9 @@ class Movement {
     void drive(float direction) {
 
         if (interval < intervalMod) {
-            if (direction > -50 && direction < 50) {
+            //if (direction > -50 && direction < 50) {
                 setAcceleration(Acceleration.FORWARD);
-
+                
                 if (direction > safeDriveAngle) 
                     setDirection(Direction.LEFT);
                 else if (direction < -safeDriveAngle) 
@@ -54,9 +54,9 @@ class Movement {
                 else
                     setDirection(Direction.NONE);
                     
-            } else {
-                setAcceleration(Acceleration.NONE);
-            }
+            //} else {
+            //    setAcceleration(Acceleration.NONE);
+            //}
         }
         interval %= intervalMod*2;
     }
