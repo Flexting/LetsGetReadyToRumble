@@ -32,7 +32,7 @@ void draw() {
     
     capture.loadPixels();
     ballDetection.exampleCode();
-    carDetection.exampleCode();
+    carDetection.detectAlgorithm();
     
     debug.display();
 }
