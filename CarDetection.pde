@@ -6,8 +6,9 @@ class CarDetection {
     }
     
     void detectAlgorithm() {
-        windowDetection();
-        // hatDetection();    
+        // windowDetection();
+        // hatDetection();   
+        arrowDetection();
     }
    
     void hatDetection() {
@@ -127,5 +128,22 @@ class CarDetection {
         noFill();
         stroke(255);
         ellipse(mid.x, mid.y, 60, 60);
+    }
+    
+    void arrowDetection() {
+        noStroke();
+        for (int i = 0; i < capture.pixels.length; i += 5) {
+            color pixel = capture.pixels[i];
+            float R = red(pixel), G = green(pixel), B = blue(pixel);
+            float Min, Max;
+            
+            Min = min(R, G, B);
+            Max = max(R, G, B);
+            
+            if (Max - Min < 3) {
+                fill(R, G, 0);
+                ellipse(i % config.captureWidth, i / config.captureWidth, 5, 5);
+            }
+        }
     }
 }
