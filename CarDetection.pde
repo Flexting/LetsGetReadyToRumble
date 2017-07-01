@@ -4,8 +4,12 @@ class CarDetection {
     CarDetection() {
       
     }
+    
+    void detectAlgorithm() {
+        hatDetection();    
+    }
    
-    void exampleCode() {
+    void hatDetection() {
         for (int i = 0; i < capture.pixels.length; i += 5) {
             color pixel = capture.pixels[i];
             float R = red(pixel), G = green(pixel), B = blue(pixel);
