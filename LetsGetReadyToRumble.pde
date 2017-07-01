@@ -6,6 +6,8 @@ Car car;
 
 BallDetection ballDetection;
 CarDetection carDetection;
+
+Debug debug;
 // Global classes end
 
 PImage capture = null;
@@ -20,6 +22,8 @@ void setup() {
     
     ballDetection = new BallDetection();
     carDetection = new CarDetection();
+    
+    debug = new Debug();
 }
 
 void draw() {
@@ -29,6 +33,8 @@ void draw() {
     capture.loadPixels();
     ballDetection.exampleCode();
     carDetection.exampleCode();
+    
+    debug.display();
 }
 
 void keyPressed() {
