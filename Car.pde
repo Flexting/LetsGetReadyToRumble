@@ -2,6 +2,8 @@ class Car {
 
     Movement movement;
     boolean autonomous;
+    
+    float carAlignment = 0;
   
     Car() {
         movement = new Movement();
@@ -16,4 +18,8 @@ class Car {
         autonomous = auto;
     }
   
+    void drive() {
+        if (autonomous)
+            movement.drive(carAlignment);
+    }
 }
