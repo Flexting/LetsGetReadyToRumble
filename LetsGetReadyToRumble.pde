@@ -14,7 +14,8 @@ PImage capture = null;
 
 void setup() {
     frameRate(60);
-    size(600, 480);
+    size(640, 480);
+    surface.setResizable(true);
    
     camera = new Camera();
     config = new Config();
@@ -24,6 +25,8 @@ void setup() {
     carDetection = new CarDetection();
     
     debug = new Debug();
+    
+    surface.setSize(config.captureWidth, config.captureHeight);
 }
 
 void draw() {

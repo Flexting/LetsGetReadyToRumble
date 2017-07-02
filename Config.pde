@@ -12,8 +12,8 @@ class Config {
         monitorWidth = (int) screenSize.getWidth();
         monitorHeight = (int) screenSize.getHeight();
       
-        captureWidth = 640;
-        captureHeight = 480;
+        captureWidth = monitorWidth/3;
+        captureHeight = monitorHeight;
         captureX = monitorWidth/2 - captureWidth/2;
         captureY = monitorHeight/2 - captureHeight/2;
     }
