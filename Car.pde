@@ -7,7 +7,7 @@ class Car {
   
     Car() {
         movement = new Movement();
-        autonomous = true;
+        autonomous = false;
     }
     
     void toggleAutonomous() {

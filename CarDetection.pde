@@ -8,7 +8,9 @@ class CarDetection {
     void detectAlgorithm() {
          //windowDetection();
          //hatDetection();   
-         arrowDetection();
+        debug.startTracking("Arrow Dect");
+        arrowDetection();
+        debug.stopTracking("Arrow Dect");
     }
    
     void hatDetection() {

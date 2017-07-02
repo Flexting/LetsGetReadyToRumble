@@ -33,12 +33,11 @@ void draw() {
     camera.screenCapture();
     image(capture, 0, 0);
     
-    capture.loadPixels();
     //ballDetection.exampleCode();
     carDetection.detectAlgorithm();
     
-    debug.display();
     car.drive();
+    debug.display();
 }
 
 void keyPressed() {

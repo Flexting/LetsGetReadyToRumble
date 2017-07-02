@@ -10,6 +10,7 @@ class Camera {
     }
    
     void screenCapture() {
+        debug.startTracking("Camera");
         // Screen captures and converts the buffered image into a PImage 'capture'
         PImage output = null;
       
@@ -26,5 +27,6 @@ class Camera {
             System.err.println("Can't create image from buffer");
             e.printStackTrace();
         }
+        debug.stopTracking("Camera");
     }
 }
