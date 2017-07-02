@@ -149,27 +149,30 @@ class CarDetection {
         ArrayList<PVector> arrowPoints = new ArrayList<PVector>();
         
         noStroke();
-        for (int i = 0; i < capture.pixels.length; i += 5) {
-            int x = i % config.captureWidth;
-            int y = i / config.captureWidth;
-            
-            if (y < config.captureHeight / 4 * 3) continue; // Ignore top area
-            if (Math.abs(x - config.captureWidth/2) < config.captureWidth/8) continue; // Ignore middle
-            
-            color pixel = capture.pixels[i];
-            float R = red(pixel), G = green(pixel), B = blue(pixel);
-            float Min, Max;
-            
-            Min = min(R, G, B);
-            Max = max(R, G, B);
-            
-            if (Min < 200) continue; // Ignore dark
-            
-            if (Max - Min < 5) {
-                fill(R, G, 0);
-                ellipse(x, y, 5, 5);
-                text("Arrow", x, y);
-                arrowPoints.add(new PVector(x, y));
+        boolean[][] used = new boolean[config.captureWidth][config.captureHeight];
+        for (int y = 5; y < config.captureHeight - 5; y+= 5) {
+            for (int x = 5; x < config.captureWidth - 5; x+= 5) {
+                if (used[x][y]) continue; // Ignore already checked cells
+                if (y < config.captureHeight / 2) continue; // Ignore top area
+                //if (Math.abs(x - config.captureWidth/2) < config.captureWidth/8) continue; // Ignore middle
+                
+                int i = config.captureWidth * y + x;
+                color pixel = capture.pixels[i];
+                float R = red(pixel), G = green(pixel), B = blue(pixel);
+                float Min, Max;
+                
+                Min = min(R, G, B);
+                Max = max(R, G, B);
+                
+                if (Min < 200) continue; // Ignore dark
+                if (Max - Min > 5) continue; // Shade of white
+                
+                if (getAreaSize(x, y, used, 50) < 50) {
+                    fill(R, G, 0);
+                    ellipse(x, y, 5, 5);
+                    arrowPoints.add(new PVector(x, y));
+                    text("Notice me senpai", x, y);
+                }
             }
         }
         
@@ -178,5 +181,47 @@ class CarDetection {
             mid.add(vec);
         mid.div(arrowPoints.size());
         car.carAlignment = config.captureWidth/2 - mid.x;
+    }
+    
+    boolean isSimilar(color main, color... others) {
+        int variance = 5;
+        for (color other : others) {
+            float red = Math.abs(red(main) - red(other));
+            float green = Math.abs(green(main) - green(other));
+            float blue = Math.abs(blue(main) - blue(other));
+            if (red > variance || green > variance || blue > variance)
+                return false;
+        }
+        return true;
+    }
+    
+    int getAreaSize(int x, int y, boolean[][] used, int limit) {
+        if (limit < 0) return 0;
+        used[x][y] = true;
+        int count = 1;
+        int i = config.captureWidth * y + x;
+        color pixel = capture.pixels[i];
+        
+        if (x >= 5 && !used[x-5][y]) {
+            color left = capture.pixels[config.captureWidth * y + (x-5)];
+            if (isSimilar(pixel, left))
+                count += getAreaSize(x-5, y, used, limit-count);
+        }
+        if (y >= 5 && !used[x][y-5]) {
+            color up = capture.pixels[config.captureWidth * (y-5) + x];
+            if (isSimilar(pixel, up))
+                count += getAreaSize(x, y-5, used, limit-count);
+        }
+        if (x < config.captureWidth - 5 && !used[x+5][y]) {
+            color right = capture.pixels[config.captureWidth * y + (x+5)];
+            if (isSimilar(pixel, right))
+                count += getAreaSize(x+5, y, used, limit-count);
+        }
+        if (y < config.captureHeight - 5 && !used[x][y+5]) {
+            color down = capture.pixels[config.captureWidth * (y+5) + x];
+            if (isSimilar(pixel, down))
+                count += getAreaSize(x, y+5, used, limit-count);
+        }
+        return count;
     }
 }
