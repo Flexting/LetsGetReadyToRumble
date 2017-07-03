@@ -11,6 +11,7 @@ class Debug
     }
     
     void display() {
+        stroke(100,100,100);
         int y = 0;
         fill(200, 100);
         rect(0, 0, 140, 70);
@@ -52,6 +53,7 @@ class Debug
         
         colorMode(HSB, tasks.size(), 1, 1);
         for (int i = 0; i < tasks.size(); i++) {
+            noStroke();
             fill(i, 1, 1);
             text(tasks.get(i) + ": " + (tasksDuration.get(i)), x, y + h + 24 * (i+1));   
             arc(x + w/2, y + h/2, w, h, currentAngle, currentAngle + (TWO_PI * tasksDuration.get(i)/totalTime)); 

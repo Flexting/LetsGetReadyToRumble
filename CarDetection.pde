@@ -148,7 +148,7 @@ class CarDetection {
     }
     
     void arrowDetection() {
-        ArrayList<PVector> arrowPoints = new ArrayList<PVector>();
+        PointCluster points = new PointCluster();
         
         noStroke();
         boolean[][] used = new boolean[config.captureWidth][config.captureHeight];
@@ -169,20 +169,18 @@ class CarDetection {
                 if (Min < 200) continue; // Ignore dark
                 if (Max - Min > 5) continue; // Shade of white
                 
-                if (getAreaSize(x, y, used, 50) < 50) {
+                int size = getAreaSize(x, y, used, 50);
+                if (size < 50) {
                     fill(R, G, 0);
                     ellipse(x, y, 5, 5);
-                    arrowPoints.add(new PVector(x, y));
+                    points.add(new PVector(x, y));
                     text("Notice me senpai", x, y);
                 }
             }
         }
         
-        PVector mid = new PVector(0, 0);
-        for (PVector vec : arrowPoints)
-            mid.add(vec);
-        mid.div(arrowPoints.size());
-        car.carAlignment = config.captureWidth/2 - mid.x;
+        points.drawEllipse();
+        car.carAlignment = config.captureWidth/2 - points.centre().x;
     }
     
     boolean isSimilar(color main, color... others) {
@@ -225,5 +223,43 @@ class CarDetection {
                 count += getAreaSize(x, y+5, used, limit-count);
         }
         return count;
+    }
+}
+
+class PointCluster {
+    ArrayList<PVector> points;
+    
+    PointCluster() {
+        points = new ArrayList<PVector>();   
+    }
+    
+    void add(PVector p) {
+        if (!points.contains(p))
+            points.add(p);
+    }
+    
+    PVector centre() {
+        PVector mid = new PVector(0, 0);
+        for (PVector p : points)
+            mid.add(p);
+        mid.div(points.size());
+        return mid;
+    }
+    
+    ArrayList<PVector> getPoints() {
+        return points;   
+    }
+    
+    void drawEllipse() {
+        stroke(255, 0, 0);
+        noFill();
+        float minX = -1;
+        float minY = -1;
+        for (PVector p : points) {
+            if (minX < 0 || p.x < minX) minX = p.x;
+            if (minY < 0 || p.y < minY) minY = p.y;
+        }
+        PVector c = centre();
+        ellipse(c.x, c.y, c.x-minX, c.y-minY);
     }
 }
