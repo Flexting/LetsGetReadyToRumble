@@ -148,7 +148,7 @@ class CarDetection {
     }
     
     void arrowDetection() {
-        PointCluster points = new PointCluster();
+        ArrayList<PointCluster> clusters = new ArrayList<PointCluster>();
         
         noStroke();
         boolean[][] used = new boolean[config.captureWidth][config.captureHeight];
@@ -167,24 +167,27 @@ class CarDetection {
                 Max = max(R, G, B);
                 
                 if (Min < 200) continue; // Ignore dark
-                if (Max - Min > 5) continue; // Shade of white
+                if (Max - Min > 10) continue; // Shade of white
                 
-                int size = getAreaSize(x, y, used, 50);
-                if (size < 50) {
-                    fill(R, G, 0);
+                
+                PointCluster points = new PointCluster();
+                int size = getAreaSize(x, y, used, 2000, points);
+                if (size > 10 && size < 50 && points.getAxisRatio() < 3) {
                     ellipse(x, y, 5, 5);
-                    points.add(new PVector(x, y));
-                    text("Notice me senpai", x, y);
+                    text(points.getPoints().size() + " points - " + points.getAxisRatio(), x, y);
+                    clusters.add(points);
                 }
             }
         }
         
-        points.drawEllipse();
-        car.carAlignment = config.captureWidth/2 - points.centre().x;
+        for (PointCluster points : clusters) {
+            points.drawEllipse();
+        }
+        //car.carAlignment = config.captureWidth/2 - points.centre().x;
     }
     
     boolean isSimilar(color main, color... others) {
-        int variance = 5;
+        int variance = 10;
         for (color other : others) {
             float red = Math.abs(red(main) - red(other));
             float green = Math.abs(green(main) - green(other));
@@ -195,9 +198,10 @@ class CarDetection {
         return true;
     }
     
-    int getAreaSize(int x, int y, boolean[][] used, int limit) {
+    int getAreaSize(int x, int y, boolean[][] used, int limit, PointCluster cluster) {
         if (limit < 0) return 0;
         used[x][y] = true;
+        cluster.add(x, y);
         int count = 1;
         int i = config.captureWidth * y + x;
         color pixel = capture.pixels[i];
@@ -205,22 +209,22 @@ class CarDetection {
         if (x >= 5 && !used[x-5][y]) {
             color left = capture.pixels[config.captureWidth * y + (x-5)];
             if (isSimilar(pixel, left))
-                count += getAreaSize(x-5, y, used, limit-count);
+                count += getAreaSize(x-5, y, used, limit-count, cluster);
         }
         if (y >= 5 && !used[x][y-5]) {
             color up = capture.pixels[config.captureWidth * (y-5) + x];
             if (isSimilar(pixel, up))
-                count += getAreaSize(x, y-5, used, limit-count);
+                count += getAreaSize(x, y-5, used, limit-count, cluster);
         }
         if (x < config.captureWidth - 5 && !used[x+5][y]) {
             color right = capture.pixels[config.captureWidth * y + (x+5)];
             if (isSimilar(pixel, right))
-                count += getAreaSize(x+5, y, used, limit-count);
+                count += getAreaSize(x+5, y, used, limit-count, cluster);
         }
         if (y < config.captureHeight - 5 && !used[x][y+5]) {
             color down = capture.pixels[config.captureWidth * (y+5) + x];
             if (isSimilar(pixel, down))
-                count += getAreaSize(x, y+5, used, limit-count);
+                count += getAreaSize(x, y+5, used, limit-count, cluster);
         }
         return count;
     }
@@ -231,6 +235,10 @@ class PointCluster {
     
     PointCluster() {
         points = new ArrayList<PVector>();   
+    }
+    
+    void add(float x, float y) {
+        add(new PVector(x, y));
     }
     
     void add(PVector p) {
@@ -250,9 +258,7 @@ class PointCluster {
         return points;   
     }
     
-    void drawEllipse() {
-        stroke(255, 0, 0);
-        noFill();
+    PVector getAxisSize() {
         float minX = -1;
         float minY = -1;
         for (PVector p : points) {
@@ -260,6 +266,21 @@ class PointCluster {
             if (minY < 0 || p.y < minY) minY = p.y;
         }
         PVector c = centre();
-        ellipse(c.x, c.y, c.x-minX, c.y-minY);
+        return new PVector(c.x-minX, c.y-minY);
+    }
+    
+    float getAxisRatio() {
+        PVector size = getAxisSize();
+        float min = min(size.x, size.y);
+        float max = max(size.x, size.y);
+        return max/min;
+    }
+    
+    void drawEllipse() {
+        stroke(255, 0, 0);
+        noFill();
+        PVector size = getAxisSize();
+        PVector c = centre();
+        ellipse(c.x, c.y, size.x, size.y);
     }
 }
