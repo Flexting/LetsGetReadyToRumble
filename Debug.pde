@@ -95,7 +95,7 @@ class Debug
         color colour;
         
         w = 50;
-        h = 50;
+        h = 100;
         x = width - 100 - w;
         y = 0;
         
@@ -103,8 +103,13 @@ class Debug
         
         fill(colour);
         rect(x, y, w, h);
-        String text = "R: " + floor(red(colour)) + "\nG: " + floor(green(colour)) + "\nB: " + floor(blue(colour));
-        fill(0);
+        String text = "R: " + floor(red(colour)) +
+                        "\nG: " + floor(green(colour)) + 
+                        "\nB: " + floor(blue(colour)) +
+                        "\nH: " + floor(hue(colour)) +
+                        "\nS: " + floor(saturation(colour)) +
+                        "\nB: " + floor(brightness(colour));
+        fill(255/2+hue(colour));
         text(text, x + 4, y + 16);
         
     }
