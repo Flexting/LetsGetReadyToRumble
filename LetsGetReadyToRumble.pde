@@ -18,8 +18,8 @@ void setup() {
     size(640, 480);
     surface.setResizable(true);
    
-    camera = new Camera();
     config = new Config();
+    camera = new Camera();
     car = new Car();
     
     ballDetection = new BallDetection();

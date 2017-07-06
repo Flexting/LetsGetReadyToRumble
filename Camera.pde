@@ -5,28 +5,31 @@ import java.awt.image.BufferedImage;
 
 class Camera {
 
+    private Robot robot;
+    private Rectangle region;
+    
     Camera() {
-      
+        try {
+            robot = new Robot();
+            region = new Rectangle(config.captureX, config.captureY, config.captureWidth, config.captureHeight);
+        } 
+        catch (Exception e) {
+            println(e.getMessage());
+        }
     }
    
     void screenCapture() {
         debug.startTracking("Camera");
-        // Screen captures and converts the buffered image into a PImage 'capture'
-        PImage output = null;
-      
-        try {
-            // Scren capture the given area
-            BufferedImage Buffcapture = new Robot().createScreenCapture( new Rectangle(config.captureX, config.captureY, config.captureWidth, config.captureHeight) ); 
-            // Convert the image into a PImage
-            output = new PImage(Buffcapture.getWidth(), Buffcapture.getHeight(), PConstants.ARGB);
-            Buffcapture.getRGB(0, 0, output.width, output.height, output.pixels, 0, output.width);
-            output.updatePixels();
-            capture = output.copy();
-        }
-        catch(Exception e) {
-            System.err.println("Can't create image from buffer");
-            e.printStackTrace();
-        }
+        // Screen capture the given area
+        BufferedImage Buffcapture = robot.createScreenCapture(region);
+        
+        // Convert the image into a PImage
+        //PImage output = new PImage(Buffcapture.getWidth(), Buffcapture.getHeight(), PConstants.ARGB);
+        //Buffcapture.getRGB(0, 0, output.width, output.height, output.pixels, 0, output.width);
+        //output.updatePixels();
+        //capture = output.copy();
+        capture = new PImage(Buffcapture);
+        
         debug.stopTracking("Camera");
     }
 }
