@@ -6,6 +6,7 @@ Car car;
 
 BallDetection ballDetection;
 CarDetection carDetection;
+MatchDetection matchDetection;
 
 Debug debug;
 // Global classes end
@@ -23,6 +24,7 @@ void setup() {
     
     ballDetection = new BallDetection();
     carDetection = new CarDetection();
+    matchDetection = new MatchDetection();
     
     debug = new Debug();
     
@@ -35,7 +37,10 @@ void draw() {
     
     //ballDetection.exampleCode();
     carDetection.detectAlgorithm();
-    new MatchDetection().findTeam();
+    
+    debug.startTracking("Team");
+    matchDetection.findTeam();
+    debug.stopTracking("Team");
     
     car.drive();
     debug.display();
