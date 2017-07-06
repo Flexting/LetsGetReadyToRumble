@@ -1,12 +1,19 @@
+
+enum Team {
+    UNKNOWN, BLUE, ORANGE   
+}
+
 class Car {
 
     Movement movement;
+    Team team;
     boolean autonomous;
     
     float carAlignment = 0;
   
     Car() {
         movement = new Movement();
+        team = Team.UNKNOWN;
         autonomous = false;
     }
     

@@ -35,6 +35,7 @@ void draw() {
     
     //ballDetection.exampleCode();
     carDetection.detectAlgorithm();
+    new MatchDetection().findTeam();
     
     car.drive();
     debug.display();

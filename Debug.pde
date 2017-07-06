@@ -14,7 +14,7 @@ class Debug
         stroke(100,100,100);
         int y = 0;
         fill(200, 100);
-        rect(0, 0, 140, 70);
+        rect(0, 0, 140, 85);
         
         fill(0);
         y += 16;
@@ -25,6 +25,8 @@ class Debug
         text("Direction: " + car.movement.direction, 8, y);
         y += 16;
         text("Acceleration: " + car.movement.acceleration, 8, y);
+        y += 16;
+        text("Team: " + car.team, 8, y);
         
         drawPieChart();
         mouseColour();
