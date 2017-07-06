@@ -27,6 +27,7 @@ class Debug
         text("Acceleration: " + car.movement.acceleration, 8, y);
         
         drawPieChart();
+        mouseColour();
     }
     
     void drawPieChart() {
@@ -87,5 +88,22 @@ class Debug
         tasksDuration.set(index, System.currentTimeMillis() - startTime);
     }
     
-    
+    void mouseColour() {
+        float x, y, w, h;
+        color colour;
+        
+        w = 50;
+        h = 50;
+        x = width - 100 - w;
+        y = 0;
+        
+        colour = capture.pixels[mouseX + mouseY * config.captureWidth];
+        
+        fill(colour);
+        rect(x, y, w, h);
+        String text = "R: " + floor(red(colour)) + "\nG: " + floor(green(colour)) + "\nB: " + floor(blue(colour));
+        fill(0);
+        text(text, x + 4, y + 16);
+        
+    }
 }
