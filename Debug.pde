@@ -109,7 +109,7 @@ class Debug
                         "\nH: " + floor(hue(colour)) +
                         "\nS: " + floor(saturation(colour)) +
                         "\nB: " + floor(brightness(colour));
-        fill(255/2+hue(colour));
+        fill((red(colour) + 128) % 255, (green(colour) + 128) % 255, (blue(colour) + 128) % 255);
         text(text, x + 4, y + 16);
         
     }
